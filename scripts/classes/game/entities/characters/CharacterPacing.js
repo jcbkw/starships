@@ -89,11 +89,11 @@
         
         if (vertical) {
 
-            this.character.cross(0, size, function (instance, forced) {
+            this.character.cross(0, size, function (forced) {
                 
-                !forced && instance.cross(0, -size, function (instance, forced) {
+                !forced && this.cross(0, -size, function (forced) {
 
-                    if (!callback || callback(that) !== false) {
+                    if (!callback || callback.call(this) !== false) {
                             
                         !forced && that.straight(size, vertical);
 
@@ -106,11 +106,11 @@
         }
         else {
 
-            this.character.cross(size, 0, function (instance, forced) {
+            this.character.cross(size, 0, function (forced) {
                 
-                !forced && instance.cross(-size, 0, function (instance, forced) {
+                !forced && this.cross(-size, 0, function (forced) {
                     
-                    if (!callback || callback(that) !== false) {
+                    if (!callback || callback.call(this) !== false) {
                             
                         !forced && that.straight(size, vertical);
 
@@ -140,15 +140,15 @@
         
         var that = this;
         
-        this.character.cross(0, size, function (instance, forced) {
+        this.character.cross(0, size, function (forced) {
 
-            !forced && instance.cross(-size, 0, function (instance, forced) {
+            !forced && this.cross(-size, 0, function (forced) {
 
-                !forced && instance.cross(0, -size, function (instance, forced) {
+                !forced && this.cross(0, -size, function (forced) {
 
-                    !forced && instance.cross(size, 0, function (instance, forced) {
+                    !forced && this.cross(size, 0, function (forced) {
                         
-                        if (!callback || callback(that) !== false) {
+                        if (!callback || callback.call(this) !== false) {
                             
                             !forced && that.square(size);
                             
@@ -181,8 +181,7 @@
         
         var points = [],
             index = 0,
-            angle = 0,
-            that = this;
+            angle = 0;
             
         angleStep = angleStep || 45;
         
@@ -198,18 +197,18 @@
         }
         
         // cross towards each point
-        cross(that.character, points[0], function next (character, forced) {
+        cross(this.character, points[0], function next (forced) {
                   
             if (++index < points.length) {
                 
-                !forced && cross(character, points[index], next);
+                !forced && cross(this, points[index], next);
                     
             }
-            else if (!callback || callback(that) !== false) {
+            else if (!callback || callback.call(this) !== false) {
                 
                 index = 0;
                 
-                !forced && cross(character, points[index], next);
+                !forced && cross(this, points[index], next);
                   
             }
              

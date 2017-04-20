@@ -34,20 +34,15 @@
             
             for (i = 0; i < 5; i += 1) {
 
-                intruder = new app.classes.game.entities.characters.Enemy((width*i) + (space*i) , height*j, 32, 32)
+                intruder = new app.classes.game.entities.characters.Enemy((width*i) + (space*i) , height*j, 32, 32);
 
                 intruder.group.add('darkforce');
 
                 this.stage.addChild(intruder);
 
-            };
-           
+            };    
             
-            
-        }         
-    
-    
-        
+        }     
         
     };
     

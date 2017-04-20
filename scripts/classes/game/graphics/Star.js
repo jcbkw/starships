@@ -23,12 +23,15 @@
      */
     function Star (x, y) {
 
-        Super.call(this, x, y, 2, 2);
+        var color = app.tk.ints.rand(10, 100),
+            size  = app.tk.ints.rand(1, 2);
+    
+        Super.call(this, x, y, size, size);
         
         // todo noooo
-        this.element.style.backgroundColor = 'gray';
-        this.stepSize = app.tk.ints.getRandomInt(1, 3);
-        this.element.style.opacity = Math.random().toPrecision(1);
+        this.element.style.backgroundColor = 'rgb('+ color +','+ color +','+ color +')';
+        this.stepSize = app.tk.ints.rand(1, 3);
+        this.endY = 0;
         
     }  
     
@@ -44,16 +47,16 @@
      */
     api.travel = function () {
         
-        var that = this;
+        this.endY = this.getContainer().height;
         
         function travelUp () {
             
-            that.setPosition(that.x, that.getContainer().height);
-            that.crossTo(that.x, 0, travelUp);
+            this.setPosition(this.x, this.endY);
+            this.crossTo(this.x, 0, travelUp);
             
         }
         
-        that.crossTo(that.x, 0, travelUp);
+        this.crossTo(this.x, 0, travelUp);
         
     };
     

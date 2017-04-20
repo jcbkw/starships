@@ -89,32 +89,36 @@
      *                                      
      * @param {Function} [onStep]           A function to call after each
      *                                      step of the cross.
+     *                                      
+     * @param {Number} [v=this.stepSize]    The stepSize to use.
      */
-    api.cross = function (x, y, onComplete, onDirection, onStep) {
-
+    api.cross = function (x, y, onComplete, onDirection, onStep, v) {
+        
         x = x || 0;
         y = y || 0;
+        v = v || this.stepSize;
 
         var that            = this,
-            currentStep     = 1,
-
-            xDirection      = x > 0 ? app.classes.geom.Direction.RIGHT 
+            
+            xDir            = x > 0 ? app.classes.geom.Direction.RIGHT 
                                     : app.classes.geom.Direction.LEFT,
-            xMaxSteps       = x && (Math.ceil(Math.abs(x) / that.stepSize)),
-            xLastStep       = x && (xMaxSteps - 1),
-            xRemainder      = x && (x % xMaxSteps),
-            xStepSize       = x && ((x - xRemainder) / xMaxSteps),
-            xLastStepSize   = xStepSize + xRemainder,
-            xDone           = !x,
-
-            yDirection      = y > 0 ? app.classes.geom.Direction.DOWN 
+            yDir            = y > 0 ? app.classes.geom.Direction.DOWN  
                                     : app.classes.geom.Direction.UP,
-            yMaxSteps       = y && (Math.ceil(Math.abs(y) / that.stepSize)),
-            yLastStep       = y && (yMaxSteps - 1),
-            yRemainder      = y && (y % yMaxSteps),
-            yStepSize       = y && ((y - yRemainder) / yMaxSteps),
-            yLastStepSize   = yStepSize + yRemainder,
+                        
+            xNeg            = xDir === app.classes.geom.Direction.LEFT,
+            yNeg            = yDir === app.classes.geom.Direction.UP,
+            
+            nowX            = that.x,
+            nowY            = that.y,
+            
+            endX            = nowX + x,
+            endY            = nowY + y,
+                
+            xDone           = !x,
             yDone           = !y,
+            
+            xV              = xNeg ? -v : v,
+            yV              = yNeg ? -v : v,
             
             setDirection;
             
@@ -126,17 +130,17 @@
                 
                 if (!yDone) {
 
-                    direction += yDirection;
+                    direction += yDir;
 
                 }
 
                 if (!xDone) {
 
-                    direction += xDirection;
+                    direction += xDir;
 
                 }
                 
-                onDirection(direction);
+                onDirection.call(that, direction);
 
             };
             
@@ -145,57 +149,46 @@
         function stepper () {
 
             if (x && !xDone) {
-
-                xDone = currentStep === xMaxSteps;
-
-                if (!xDone) {
-
-                    switch (currentStep) {
-
-                        case xLastStep: that.move(xLastStepSize, 0); break;
-                        default: that.move(xStepSize, 0); break;
-
-                    }
-
-                }
-                else {
-
+                
+                nowX += xV;
+                xDone = xNeg ? nowX <= endX : nowX >= endX;
+                
+                if (xDone) {
+                    
+                    that.move(xV, 0);
                     setDirection && setDirection();
                     stop();
-
+                    
+                }
+                else {
+                    
+                    that.move(xV, 0);
+                    
                 }
 
             }
 
             if (y && !yDone) {
-
-                yDone = currentStep === yMaxSteps;
-
-                if (!yDone) {
-
-                    switch (currentStep) {
-
-                        case yLastStep: 
-                            that.move(0, yLastStepSize); break;
-
-                        default: 
-                            that.move(0, yStepSize); break;
-
-                    }
-
-                }
-                else {
-
+                
+                nowY  += yV;
+                yDone = yNeg ? nowY <= endY : nowY >= endY;
+                
+                if (yDone) {
+                    
+                    that.move(0, yV);
                     setDirection && setDirection();
                     stop();
-
+                    
+                }
+                else {
+                    
+                    that.move(0, yV);
+                    
                 }
 
             }
-
-            ++currentStep;
-
-            onStep && onStep(/*isLastCall*/false);
+            
+            onStep && onStep.call(that, /*isLastCall*/yDone && xDone);
 
         }
 
@@ -205,15 +198,14 @@
 
                 xDone = yDone = true;
 
-                app.unTick(stepper);
-                onStep && onStep(/*isLastCall*/true);
+                app.unTick(stepper);               
                 setDirection && setDirection();
                 
                 that._uncross = stepper = stop = null;
                 
                 app.nextTick(function () {
                     
-                    onComplete && onComplete(that, !!force);
+                    onComplete && onComplete.call(that, !!force);
                                         
                     that = null;
                     
@@ -256,14 +248,16 @@
      *                                      
      * @param {Function} [onStep]           A function to call after each
      *                                      step of the cross.
+     *                                      
+     * @param {Number} [v=this.stepSize]    The stepSize to use.
      */        
-    api.crossTo = function (x, y, onComplete, onDirection, onStep) {
+    api.crossTo = function (x, y, onComplete, onDirection, onStep, v) {
 
         // quick check for a positive integer
         x = !x || x < 0 ? 0 : x;
         y = !y || y < 0 ? 0 : y;
 
-        return this.cross(x - this.x, y - this.y, onComplete, onDirection, onStep);
+        return this.cross(x - this.x, y - this.y, onComplete, onDirection, onStep, v);
 
     };
     

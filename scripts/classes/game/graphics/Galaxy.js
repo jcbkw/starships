@@ -43,15 +43,14 @@
         var star,
             i;
         
-        for (i = 0; i <= count; i += 1 ) {
+        for (i = 0; i < count; i += 1) {
             
             star = new app.classes.game.graphics.Star(
-                        app.tk.ints.getRandomInt(0, this.width),
-                        app.tk.ints.getRandomInt(0, this.height)
+                        app.tk.ints.rand(0, this.width),
+                        app.tk.ints.rand(0, this.height)
                    );
             
             this.addChild(star);
-            
             star.travel();
             
         }

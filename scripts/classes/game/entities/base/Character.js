@@ -300,34 +300,34 @@
      *                                      
      * @param {Function} [onStep]           A function to call after each
      *                                      step of the cross.
+     *                                      
+     * @param {Number} [v=this.stepSize]    The stepSize to use.
      */
-    api.cross = function (x, y, onComplete, onDirection, onStep) {
-        
-        var that = this;
+    api.cross = function (x, y, onComplete, onDirection, onStep, v) {
         
         function onEachStep (isLastStep) {
             
-            that.setInMotion(true);
-            onStep && onStep(isLastStep);
+            this.setInMotion(true);
+            onStep && onStep.call(this, isLastStep);
             
         }
         
-        function onStopped (instance, forced) {
+        function onStopped (forced) {
             
-            that.setInMotion(false);
-            that.setDirection(null);
-            onComplete && onComplete(instance, forced);
+            this.setInMotion(false);
+            this.setDirection(null);
+            onComplete && onComplete.call(this, forced);
             
         }
         
         function onDirectionInsight (direction) {
             
-            that.setDirection(direction);
-            onDirection && onDirection(direction);
+            this.setDirection(direction);
+            onDirection && onDirection.call(this, direction);
             
         }
 
-        SuperB.prototype.cross.call(this, x, y, onStopped, onDirectionInsight, onEachStep);
+        SuperB.prototype.cross.call(this, x, y, onStopped, onDirectionInsight, onEachStep, v);
 
     };
     
@@ -350,34 +350,34 @@
      *                                      
      * @param {Function} [onStep]           A function to call after each
      *                                      step of the cross.
+     *                                      
+     * @param {Number} [v=this.stepSize]    The stepSize to use.
      */
-    api.crossTo = function (x, y, onComplete, onDirection, onStep) {
-        
-        var that = this;
+    api.crossTo = function (x, y, onComplete, onDirection, onStep, v) {
         
         function onEachStep (isLastStep) {
             
-            that.setInMotion(true);
-            onStep && onStep(isLastStep);
+            this.setInMotion(true);
+            onStep && onStep.call(this, isLastStep);
             
         }
         
-        function onStopped (instance, forced) {
+        function onStopped (forced) {
             
-            that.setInMotion(false);
-            that.setDirection(null);
-            onComplete && onComplete(instance, forced);
+            this.setInMotion(false);
+            this.setDirection(null);
+            onComplete && onComplete.call(this, forced);
             
         }
         
         function onDirectionInsight (direction) {
             
-            that.setDirection(direction);
-            onDirection && onDirection(direction);
+            this.setDirection(direction);
+            onDirection && onDirection.call(this, direction);
             
         }
 
-        return SuperB.prototype.crossTo.call(this, x, y, onStopped, onDirectionInsight, onEachStep);
+        return SuperB.prototype.crossTo.call(this, x, y, onStopped, onDirectionInsight, onEachStep, v);
 
     };
         
