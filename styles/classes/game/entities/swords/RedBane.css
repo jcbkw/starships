@@ -1,0 +1,66 @@
+.redbane {
+    
+    background-image: url("../../../../../images/weapons/swords/red-bane.png");
+    background-repeat: no-repeat;
+    background-color: transparent;
+    
+    -webkit-transform-origin: center center;
+    -webkit-animation: redbaneslash .2s steps(6);
+    -webkit-animation-fill-mode: forwards;
+    
+}
+
+@-webkit-keyframes redbaneslash {
+
+    from { background-position-x:   0px; }
+      to { background-position-x: -288px; }
+
+}
+
+.player[direction=down] .redbane {
+    
+    -webkit-transform: translate(-7px, 15px);
+   
+}
+
+.player[direction=right] .redbane {
+    
+    -webkit-transform: translate(5px, 7px) rotate(270deg);
+   
+}
+
+.player[direction=left] .redbane {
+    
+    -webkit-transform: translate(-20px, 7px) rotate(90deg);
+   
+}
+
+.player[direction=up] .redbane {
+    
+    -webkit-transform: translate(-5px, -10px) rotate(180deg);
+   
+}
+
+.player[direction=upleft] .redbane {
+    
+    -webkit-transform: translate(-12px, -7px) rotate(135deg);
+   
+}
+
+.player[direction=downleft] .redbane {
+    
+    -webkit-transform: translate(-15px, 15px) rotate(45deg);
+   
+}
+
+.player[direction=upright] .redbane {
+    
+    -webkit-transform: translate(5px, -5px) rotate(225deg);
+   
+}
+
+.player[direction=downright] .redbane {
+    
+    -webkit-transform: translate(0px, 15px) rotate(315deg);
+   
+ }

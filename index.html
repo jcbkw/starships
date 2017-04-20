@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Mini game</title>
+        
+        <!-- STYLES -->
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+        
+        <link href="styles/classes/display/Displayable.css" rel="stylesheet">
+        
+        <link href="styles/classes/game/Viewport.css" rel="stylesheet">
+        <link href="styles/classes/game/Stage.css" rel="stylesheet">
+        
+        <link href="styles/classes/game/utils/LifeBar.css" rel="stylesheet">
+        
+        <link href="styles/classes/game/entities/base/Bullet.css" rel="stylesheet">
+        
+        <link href="styles/classes/game/entities/swords/ExCalibur.css" rel="stylesheet">
+        <link href="styles/classes/game/entities/swords//RedBane.css" rel="stylesheet">
+        
+        <link href="styles/classes/game/entities/characters/Actor.css" rel="stylesheet">
+        <link href="styles/classes/game/entities/characters/Enemy.css" rel="stylesheet">
+        <link href="styles/classes/game/entities/characters/Player.css" rel="stylesheet">
+        <link href="styles/classes/game/entities/characters/Enemy/darkforce.css" rel="stylesheet">
+        <link href="styles/classes/game/entities/characters/Player/hero.css" rel="stylesheet">
+
+        <link href="styles/app.css" rel="stylesheet">
+        
+        <!-- SCRIPTS -->
+        <script src="scripts/ns.js"></script>
+        
+        <script src="scripts/classes/core/Finalizable.js"></script>
+        <script src="scripts/classes/core/ArgumentError.js"></script>
+        <script src="scripts/classes/core/RangeError.js"></script>
+        
+        <script src="scripts/tk/arrays.js"></script>
+        <script src="scripts/tk/ints.js"></script>
+        <script src="scripts/tk/floats.js"></script>
+        <script src="scripts/tk/utils.js"></script>
+        <script src="scripts/tk/types.js"></script>
+        <script src="scripts/tk/calc.js"></script>
+                
+        <script src="scripts/classes/geom/Point.js"></script>
+        <script src="scripts/classes/geom/Dimension.js"></script>
+        <script src="scripts/classes/geom/Line.js"></script>
+        <script src="scripts/classes/geom/Position.js"></script>
+        <script src="scripts/classes/geom/Direction.js"></script>
+        <script src="scripts/classes/geom/Rectangle.js"></script>
+        <script src="scripts/classes/geom/VectorDirection.js"></script>
+        <script src="scripts/classes/geom/RectangularBounds.js"></script>
+        
+        <script src="scripts/classes/display/displayable/Transformer.js"></script>
+        <script src="scripts/classes/display/displayable/Informer.js"></script>
+        <script src="scripts/classes/display/displayable/Processor.js"></script>
+        <script src="scripts/classes/display/Displayable.js"></script>
+        <script src="scripts/classes/display/DisplayableContainer.js"></script>
+        <script src="scripts/classes/display/DisplayClip.js"></script>
+        
+        <script src="scripts/classes/hid/Joystick.js"></script>
+        
+        <script src="scripts/classes/game/Viewport.js"></script>
+        <script src="scripts/classes/game/Stage.js"></script>
+        <script src="scripts/classes/game/Engine.js"></script>
+        
+        <script src="scripts/classes/game/utils/Collisions.js"></script>
+        <script src="scripts/classes/game/utils/LifeGauge.js"></script>
+        <script src="scripts/classes/game/utils/LifeGaugeView.js"></script>
+        <script src="scripts/classes/game/utils/LifeBar.js"></script>
+        
+        <script src="scripts/classes/game/graphics/Star.js"></script>
+        <script src="scripts/classes/game/graphics/Galaxy.js"></script>
+        
+        <script src="scripts/classes/game/entities/base/Entity.js"></script>
+        <script src="scripts/classes/game/entities/base/Sentient.js"></script>
+        <script src="scripts/classes/game/entities/base/Insentient.js"></script>
+        <script src="scripts/classes/game/entities/base/Volume.js"></script>
+        <script src="scripts/classes/game/entities/base/Weaponry.js"></script>
+        <script src="scripts/classes/game/entities/base/Bullet.js"></script>
+        <script src="scripts/classes/game/entities/base/Weapon.js"></script>
+        <script src="scripts/classes/game/entities/base/Character.js"></script>
+        <script src="scripts/classes/game/entities/base/Gun.js"></script>
+        
+        <script src="scripts/classes/game/entities/volumes/Pushable.js"></script>
+        <script src="scripts/classes/game/entities/volumes/Boundary.js"></script>
+        <script src="scripts/classes/game/entities/volumes/Dust.js"></script>
+        <script src="scripts/classes/game/entities/volumes/Box.js"></script>
+        
+        <script src="scripts/classes/game/entities/bullets/TinyBullet.js"></script>
+        
+        <script src="scripts/classes/game/entities/sword/ExCalibur.js"></script>
+        <script src="scripts/classes/game/entities/sword/RedBane.js"></script>
+        
+        <script src="scripts/classes/game/entities/characters/CharacterPacing.js"></script>
+        <script src="scripts/classes/game/entities/characters/Attacker.js"></script>
+        <script src="scripts/classes/game/entities/characters/Actor.js"></script>
+        <script src="scripts/classes/game/entities/characters/Enemy.js"></script>
+        <script src="scripts/classes/game/entities/characters/Player.js"></script>
+        
+        <script src="scripts/classes/game/ai/Ai.js"></script>
+        <script src="scripts/classes/game/ai/ZombieRaid.js"></script>
+        
+        <script src="scripts/app.js"></script>
+    </head>
+    <body></body>
+</html>

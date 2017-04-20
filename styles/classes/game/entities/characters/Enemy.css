@@ -1,0 +1,13 @@
+.enemy {
+    
+    z-index: 100;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    
+}
+
+.enemy.in-motion {
+
+    animation: none .8s steps(3) infinite;
+
+}

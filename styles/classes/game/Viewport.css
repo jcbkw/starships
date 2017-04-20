@@ -1,0 +1,11 @@
+.viewport {
+
+    border: 1px solid black;
+    margin: 0 auto;
+    position: static;
+    overflow: hidden;
+       
+    /*enable hardware acceleration*/
+    transform: translate3d(0,0,0);
+    
+}
