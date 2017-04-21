@@ -449,8 +449,13 @@
             for (beginIndex; beginIndex < endIndex; beginIndex += 1) {
                 
                 child = this.children[beginIndex];
-                this.children[beginIndex] = null;
-                onChildRemoved(this, child);
+                
+                if (child) {
+                    
+                    this.children[beginIndex] = null;
+                    onChildRemoved(this, child);
+                    
+                }
                 
             }
             
@@ -563,14 +568,18 @@
             
         if (this.children) {
             
-            if (child1.container !== this || child2.container !== this) {
+            index1 = resolveChildIndex(child1);
+            index2 = resolveChildIndex(child2);
+            
+            if (   child1.container !== this
+                || child2.container !== this
+                || index1 === -1
+                || index2 === -1
+               ) {
                 
                 app.die(new app.core.ArgumentError('The child parameter is not a child of this object!'));
                 
             }
-            
-            index1 = resolveChildIndex(child1);
-            index2 = resolveChildIndex(child2);
             
             if (index1 !== index2) {
                 
@@ -704,7 +713,11 @@
      */
     function applyChildIndex (that, child, index) {
         
-        child.element.style.zIndex = index;
+        if (child) {
+            
+            child.element.style.zIndex = index;
+            
+        }
         
     }
         
@@ -719,7 +732,7 @@
      */
     function onChildAdded (that, child, index) {
         
-        ++this.childCount;
+        ++that.childCount;
         
         child.container = that;
         applyChildIndex(that, child, index);
@@ -738,7 +751,7 @@
      */
     function onChildRemoved (that, child) {
         
-        --this.childCount;
+        --that.childCount;
         
         child.container = null;
         applyChildIndex(that, child, '');

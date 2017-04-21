@@ -21,8 +21,9 @@
             
         }
         
+        this.watchStage = false;
+        
         this.watchAll = 
-        this.watchStage = 
         this.watchSentient = 
         this.watchInsentient = true;
         
@@ -161,11 +162,9 @@
     
     function createSentientWatcher (engine) {
         
-        var entityTypes = app.tk.arrays.fixed(1, app.classes.game.entities.base.Entity);
-        
         return function () {
             
-            var entites = app.stage.getDescendants(entityTypes),
+            var entites = app.stage.getEntities(),
                 entityA = null,
                 entityB = null,
                 count = entites.length >>> 0,
@@ -177,18 +176,18 @@
                 entityA = entites[i];
                 
                 for (j = 0; j < count; j += 1) {
-                    
+
                     if (j !== i) {
-                        
+
                         entityB = entites[j];
-                        
-                        if (entityA.isCollidableWith(entityB) && entityA.intersects(entityB)) {
-                            
+
+                        if (entityA.intersects(entityB) && entityA.isCollidableWith(entityB)) {
+
                             entityA.handleCollision(entityB);
                             //app.log('A', entityA.constructor.name, 'collided with a', entityB.constructor.name);
-                            
+
                         }
-                        
+
                     }
 
                 }

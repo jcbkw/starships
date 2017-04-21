@@ -1,5 +1,11 @@
-.enemy.darkforce {
+.enemy.darkforce.type-1 {
 
-    background-image: url("../../../../../../images/classes/game/characters/enemies/darkforce.svg");
+    background-image: url("../../../../../../images/classes/game/characters/enemies/darkforce-1.svg");
+
+}
+
+.enemy.darkforce.type-2 {
+
+    background-image: url("../../../../../../images/classes/game/characters/enemies/darkforce-2.svg");
 
 }

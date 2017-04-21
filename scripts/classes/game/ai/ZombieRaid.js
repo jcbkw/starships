@@ -21,22 +21,24 @@
      * Starts the AI computations
      */
     api.start = function () {
+        
         var intruder, 
             height = 32,
             space = 10,
             width = 32,
             rows = 2,
+            cols = 5,
             i,
             j;
     
         for (j = 0; j < rows; j +=1 ) {
            
             
-            for (i = 0; i < 5; i += 1) {
+            for (i = 0; i < cols; i += 1) {
 
                 intruder = new app.classes.game.entities.characters.Enemy((width*i) + (space*i) , height*j, 32, 32);
 
-                intruder.group.add('darkforce');
+                intruder.group.add('darkforce', 'type-1');
 
                 this.stage.addChild(intruder);
 
