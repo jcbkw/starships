@@ -23,11 +23,11 @@
     api.start = function () {
         
         var intruder, 
-            height = 32,
+            height = 16,
             space = 10,
-            width = 32,
-            rows = 2,
-            cols = 5,
+            width = 16,
+            rows = 3,
+            cols = 8,
             i,
             j;
     
@@ -36,7 +36,12 @@
             
             for (i = 0; i < cols; i += 1) {
 
-                intruder = new app.classes.game.entities.characters.Enemy((width*i) + (space*i) , height*j, 32, 32);
+                intruder = new app.classes.game.entities.characters.Enemy(
+                    (width  * i) + (space * i),
+                    (height * j) + (space * j),
+                     width,
+                     height
+                );
 
                 intruder.group.add('darkforce', 'type-1');
 

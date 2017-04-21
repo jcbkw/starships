@@ -93,25 +93,28 @@
      */
     function init () {
         
-        app.viewport = new app.classes.game.Viewport(document.body, 400, 300);
-        app.stage    = new app.classes.game.Stage(0, 0, 400, 300);
+        app.viewport = new app.classes.game.Viewport(document.body, 480, 270);
+        app.stage    = new app.classes.game.Stage(0, 0, app.viewport.width, app.viewport.height);
         
         app.viewport.addChild(app.stage);
         app.stage.boundToContainer();
        
             
-        var galaxy = new app.classes.game.graphics.Galaxy(0, 0, 400, 300);
+        var galaxy = new app.classes.game.graphics.Galaxy(0, 0, app.viewport.width, app.viewport.height);
             
         app.stage.addChild(galaxy);
         galaxy.render(50);
         
        
-        app.player = new app.classes.game.entities.characters.Player(0, 0, 32, 32);
+        app.player = new app.classes.game.entities.characters.Player(0, 0, 16, 16);
         
         app.player.stepSize = 3;
         app.player.group.add('hero');
         app.stage.addChild(app.player);
-        app.player.setBounds(new app.classes.geom.RectangularBounds(/*top*/204, /*right*/ 368, /*bottom*/268, /*left*/ 0));
+        app.player.setBounds(new app.classes.geom.RectangularBounds(/*top*/  app.viewport.height  - (app.player.height * 2),
+                                                                    /*right*/ app.viewport.width  - app.player.width, 
+                                                                    /*bottom*/app.viewport.height - app.player.height, 
+                                                                    /*left*/ 0));
         
         app.player.setWeapon(new app.classes.game.entities.base.Gun());
         

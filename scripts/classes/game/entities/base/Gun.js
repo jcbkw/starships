@@ -58,7 +58,7 @@
                 
                 // todo, quick and dirty, the gun should not
                 // decide which bullet to use
-                bullet = new app.classes.game.entities.bullets.TinyBullet(this);
+                bullet = new app.classes.game.entities.bullets.UpOrDownBullet(this);
                 
                 attacker.getContainer().addChild(bullet);
                 bullet.fire();

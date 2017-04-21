@@ -33,6 +33,7 @@
         Super.call(this, x, y, width, height);
         
         this.initialPad     = 0;
+        this.strategy       = Bullet.Strategy.PLAYER_DIRECTION;
         this.weapon         = weapon;
         this.tickFn         = null;
         this.angle          = angle || 0;
@@ -62,9 +63,64 @@
     Bullet.CAN_HIT_BULLET = false;
     
     /**
+     * @namespace The different bullet flight plans.
+     * @enum {Number}
+     */
+    Bullet.Strategy = {
+        
+        /**
+         * @static
+         * @memberOf app.classes.game.entities.base.Bullet.Strategy
+         * @property {Number} PLAYER_DIRECTION Flies towards the direction that
+         *                                     the player was facing when fired.
+         */
+        PLAYER_DIRECTION : 1,
+        
+        /**
+         * @static
+         * @memberOf app.classes.game.entities.base.Bullet.Strategy
+         * @property {Number} PLAYER_DIRECTION Flies towards the direction
+         *                                     by the setDirection call;
+         */
+        STATIC_DIRECTION : 2,
+        
+        /**
+         * @static
+         * @memberOf app.classes.game.entities.base.Bullet.Strategy
+         * @property {Number} PLAYER_DIRECTION NOT IMPLEMENTED.
+         *                                     Flies towards the specified
+         *                                     target point.
+         */
+        DYNAMIC_DIRECTION: 3
+        
+    };
+    
+    /**
      * @property {Function} constructor Constructor
      */
     api.constructor = Bullet;
+    
+    /**
+     * Get this bullet's flight strategy.
+     * 
+     * @returns {Number}
+     */
+    api.getStrategy = function () {
+        
+        return this.strategy;
+        
+    };
+    
+    /**
+     * Set this bullet's flight strategy.
+     * 
+     * @param {Number} value
+     */
+    api.setStrategy = function (value) {
+        
+        this.strategy = value;
+        
+    };
     
     /**
      * Tells whether this entity can be collided
@@ -118,7 +174,9 @@
     api.fire = function () {
         
         var attacker    = this.weapon.getAttacker(),
-            direction   = attacker.getDirection();
+            direction   = this.strategy === Bullet.Strategy.PLAYER_DIRECTION
+                        ? attacker.getDirection()
+                        : this.getDirection();
             
         if (direction && attacker) {
             
