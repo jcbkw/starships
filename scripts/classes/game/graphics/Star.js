@@ -5,9 +5,9 @@
     "use strict";
     
     /**
-     * @type app.classes.display.DisplayClip
+     * @type app.classes.display.DisplayableClip
      */
-    var Super = app.classes.display.DisplayClip,
+    var Super = app.classes.display.DisplayableClip,
         
         /**
          * @lends app.classes.game.graphics.Star.prototype

@@ -24,6 +24,7 @@
         this.group.add(Gun.GROUP);
         
         this.ammo = Number.POSITIVE_INFINITY;
+        this.bullet = null;
 
     }
     
@@ -47,24 +48,30 @@
      */
     api.attack =  function () {
         
-        var bullet,
-            attacker;
+        var attacker;
 
         if (this.ammo > 0) {
             
             attacker = this.getAttacker();
             
-            if (attacker) {
+            if (attacker && attacker.getContainer()) {
                 
-                // todo, quick and dirty, the gun should not
-                // decide which bullet to use
-                bullet = new app.classes.game.entities.bullets.UpOrDownBullet(this);
-                
-                attacker.getContainer().addChild(bullet);
-                bullet.fire();
+                if (!this.isOnPlayerSide()
+                    || !this.bullet  
+                    || this.bullet.isFinalized()  
+                    ) {
+                    
+                    // todo, quick and dirty, the gun should not
+                    // decide which bullet to use
+                    this.bullet = new app.classes.game.entities.bullets.UpOrDownBullet(this);
 
-                this.ammo--;
-                
+                    app.stage.addChild(this.bullet);
+                    this.bullet.fire();
+
+                    this.ammo--;
+                    
+                }
+                                
             }
 
         }

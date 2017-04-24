@@ -79,11 +79,25 @@
      * 
      * @param {Number} size
      * @param {Boolean} [vertical=false]
-     * @param {Function} [callback] Called when each cycle of the pacing
-     *                              is complete. Return <code>false</code>
-     *                              to stop pacing.
+     * 
+     * @param {Number|Object} [v=this]      The stepSize to use. If you pass
+     *                                      a number, that number will be used
+     *                                      as stepSize, if you pass an object,
+     *                                      that object's stepSize will be read
+     *                                      on each tick. If you ommit this
+     *                                      argument, the current instance's
+     *                                      character's stepSize will be used.
+     *                                      Step sizes must be positive numbers.
+     * 
+     * @param {Function} [onComplete]       Called when each cycle of the pacing
+     *                                      is complete. Return <code>false</code>
+     *                                      to stop pacing.
+     *                                  
+     * @param {Function} [onReverse]        Called each time this function is 
+     *                                      about to go the inverse direction.
+     *                                      Return <code>false</code>to stop pacing.
      */
-    api.straight = function (size, vertical, callback) {
+    api.straight = function (size, vertical, v, onComplete, onReverse) {
         
         var that = this;
         
@@ -91,34 +105,46 @@
 
             this.character.cross(0, size, function (forced) {
                 
-                !forced && this.cross(0, -size, function (forced) {
+                if (!onReverse || onReverse.call(this.character) !== false) {
+                    
+                    !forced && this.cross(0, -size, function (forced) {
 
-                    if (!callback || callback.call(this) !== false) {
-                            
-                        !forced && that.straight(size, vertical);
+                        if (!onComplete || onComplete.call(this.character) !== false) {
 
-                    }
+                            !forced && that.straight(
+                                size, vertical, v, onComplete, onReverse
+                            );
 
-                });
+                        }
 
-            });
+                    }, null, null, v);
+
+                }
+                
+            }, null, null, v);
 
         }
         else {
 
             this.character.cross(size, 0, function (forced) {
                 
-                !forced && this.cross(-size, 0, function (forced) {
+                if (!onReverse || onReverse.call(this.character) !== false) {
                     
-                    if (!callback || callback.call(this) !== false) {
-                            
-                        !forced && that.straight(size, vertical);
+                    !forced && this.cross(-size, 0, function (forced) {
 
-                    }
+                        if (!onComplete || onComplete.call(this.character) !== false) {
+
+                            !forced && that.straight(
+                                size, vertical, v, onComplete, onReverse
+                            );
+
+                        }
+
+                    }, null, null, v);
                     
-                });
+                }
 
-            });
+            }, null, null, v);
 
         }
 
@@ -129,38 +155,70 @@
      * You can stop an anytime by calling <code>uncross</code>
      * on the character.
      * 
-     * @see app.classes.display.DisplayClip.uncross
+     * @see app.classes.display.DisplayableClip.uncross
      * 
      * @param {Number} size
-     * @param {Function} [callback] Called when each cycle of the pacing
-     *                              is complete. Return <code>false</code>
-     *                              to stop pacing.
+     * @param {Number|Object} [v=this]      The stepSize to use. If you pass
+     *                                      a number, that number will be used
+     *                                      as stepSize, if you pass an object,
+     *                                      that object's stepSize will be read
+     *                                      on each tick. If you ommit this
+     *                                      argument, the current instance's
+     *                                      character's stepSize will be used.
+     *                                      Step sizes must be positive numbers.
+     * 
+     * @param {Function} [onComplete]       Called when each cycle of the pacing
+     *                                      is complete. Return <code>false</code>
+     *                                      to stop pacing.
+     *                                  
+     * @param {Function} [onNewSide]        Called each time this function is 
+     *                                      about to go the on a new size of the
+     *                                      square. Return <code>false</code>
+     *                                      to stop pacing.
      */
-    api.square = function (size, callback) {
+    api.square = function (size, v, onComplete, onNewSide) {
+        
+        // @todo, should also allow to go ccw.
         
         var that = this;
         
-        this.character.cross(0, size, function (forced) {
+        if (!onNewSide || onNewSide.call(this.character, app.classes.geom.Position.BOTTOM) !== false) {
+            
+            this.character.cross(0, size, function (forced) {
 
-            !forced && this.cross(-size, 0, function (forced) {
+                if (!onNewSide || onNewSide.call(this.character, app.classes.geom.Position.LEFT) !== false) {
 
-                !forced && this.cross(0, -size, function (forced) {
+                    !forced && this.cross(-size, 0, function (forced) {
 
-                    !forced && this.cross(size, 0, function (forced) {
-                        
-                        if (!callback || callback.call(this) !== false) {
-                            
-                            !forced && that.square(size);
-                            
+                        if (!onNewSide || onNewSide.call(this.character, app.classes.geom.Position.TOP) !== false) {
+
+                            !forced && this.cross(0, -size, function (forced) {
+
+                                if (!onNewSide || onNewSide.call(this.character, app.classes.geom.Position.RIGHT) !== false) {
+
+                                    !forced && this.cross(size, 0, function (forced) {
+
+                                        if (!onComplete || onComplete.call(this.character) !== false) {
+
+                                            !forced && that.square(size, v, onComplete, onNewSide);
+
+                                        }
+
+                                    }, null, null, v);
+
+                                }
+
+                            }, null, null, v);
+
                         }
 
-                    });
+                    }, null, null, v);
 
-                });
+                }
 
-            });
-
-        });
+            }, null, null, v);
+            
+        }
 
     };
     
@@ -169,17 +227,34 @@
      * You can stop an anytime by calling <code>uncross</code>
      * on the character.
      * 
-     * @see app.classes.display.DisplayClip.uncross
+     * @see app.classes.display.DisplayableClip.uncross
      * 
      * @param {Number} radius
      * @param {Number} [angleStep=45]
-     * @param {Function} [callback] Called when each cycle of the pacing
-     *                              is complete. Return <code>false</code>
-     *                              to stop pacing.
+     * @param {Number|Object} [v=this]      The stepSize to use. If you pass
+     *                                      a number, that number will be used
+     *                                      as stepSize, if you pass an object,
+     *                                      that object's stepSize will be read
+     *                                      on each tick. If you ommit this
+     *                                      argument, the current instance's
+     *                                      character's stepSize will be used.
+     *                                      Step sizes must be positive numbers.
+     * 
+     * @param {Function} [onComplete]       Called when each cycle of the pacing
+     *                                      is complete. Return <code>false</code>
+     *                                      to stop pacing.
+     *                                  
+     * @param {Function} [onNewAngle]       Called each time this function is 
+     *                                      about to go the on a new angle
+     *                                      Return <code>false</code>
+     *                                      to stop pacing.
      */
-    api.circle = function (radius, angleStep, callback) {
+    api.circle = function (radius, angleStep, v, onComplete, onNewAngle) {
+     
+        // @todo, should also allow to go ccw.
         
         var points = [],
+            angles = [],
             index = 0,
             angle = 0;
             
@@ -194,21 +269,27 @@
                 Math.round(radius * Math.sin(angle * Math.PI / 180))
             ));
     
+            angles.push(angle);
+    
         }
         
         // cross towards each point
-        cross(this.character, points[0], function next (forced) {
+        cross(this.character, points[0], v, function next (forced) {
                   
             if (++index < points.length) {
                 
-                !forced && cross(this, points[index], next);
+                if (!onNewAngle || onNewAngle.call(this, angles[index]) !== false) {
+                    
+                    !forced && cross(this, points[index], v, next);
+                    
+                }
                     
             }
-            else if (!callback || callback.call(this) !== false) {
+            else if (!onComplete || onComplete.call(this) !== false) {
                 
                 index = 0;
                 
-                !forced && cross(this, points[index], next);
+                !forced && cross(this, points[index], v, next);
                   
             }
              
@@ -222,11 +303,12 @@
      * @private
      * @param {app.classes.game.chracters.Character} character
      * @param {app.classes.geom.Point} point
+     * @param {Number|Object} v
      * @param {Function} callback
      */
-    function cross (character, point, callback) {
+    function cross (character, point, v, callback) {
             
-        character.cross(point.x, point.y, callback);
+        character.cross(point.x, point.y, callback, null, null, v);
 
     }
     

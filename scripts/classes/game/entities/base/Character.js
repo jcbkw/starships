@@ -8,9 +8,9 @@
     var SuperA = app.classes.game.entities.base.Sentient,
         
         /**
-         * @type app.classes.display.DisplayClip
+         * @type app.classes.display.DisplayableClip
          */
-        SuperB = app.classes.display.DisplayClip,
+        SuperB = app.classes.display.DisplayableClip,
         
         /**
          * @lends app.classes.game.entities.base.Character.prototype
@@ -21,7 +21,7 @@
      * @class Character A base Character Class
      * 
      * @augments app.classes.game.entities.base.Sentient
-     * @augments app.classes.display.DisplayClip
+     * @augments app.classes.display.DisplayableClip
      * 
      * @param {Number} [x=0]
      * @param {Number} [y=0]
@@ -301,7 +301,14 @@
      * @param {Function} [onStep]           A function to call after each
      *                                      step of the cross.
      *                                      
-     * @param {Number} [v=this.stepSize]    The stepSize to use.
+     * @param {Number|Object} [v=this]      The stepSize to use. If you pass
+     *                                      a number, that number will be used
+     *                                      as stepSize, if you pass an object,
+     *                                      that object's stepSize will be read
+     *                                      on each tick. If you ommit this
+     *                                      argument, the current instance's
+     *                                      stepSize will be used. Step sizes
+     *                                      must be positive numbers.
      */
     api.cross = function (x, y, onComplete, onDirection, onStep, v) {
         
@@ -351,7 +358,14 @@
      * @param {Function} [onStep]           A function to call after each
      *                                      step of the cross.
      *                                      
-     * @param {Number} [v=this.stepSize]    The stepSize to use.
+     * @param {Number|Object} [v=this]      The stepSize to use. If you pass
+     *                                      a number, that number will be used
+     *                                      as stepSize, if you pass an object,
+     *                                      that object's stepSize will be read
+     *                                      on each tick. If you ommit this
+     *                                      argument, the current instance's
+     *                                      stepSize will be used. Step sizes
+     *                                      must be positive numbers.
      */
     api.crossTo = function (x, y, onComplete, onDirection, onStep, v) {
         

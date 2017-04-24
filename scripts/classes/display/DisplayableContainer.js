@@ -14,7 +14,7 @@
          * @lends {app.classes.display.DisplayableContainer.prototype}
          */
         api = new Super;
-    
+        
     /**
      * An Object that can be rendered on the screen.
      * 
@@ -737,7 +737,7 @@
         child.container = that;
         applyChildIndex(that, child, index);
         getInnerElement(that).appendChild(child.element);
-        child.on.added && child.on.added.call(child, that);
+        child.dispatchEvent(child.events.ADDED);
         
     }
     
@@ -756,7 +756,7 @@
         child.container = null;
         applyChildIndex(that, child, '');
         that.innerElement.removeChild(child.element);
-        child.on.removed && child.on.removed.call(child, that);
+        child.dispatchEvent(child.events.REMOVED);
                 
     }
     

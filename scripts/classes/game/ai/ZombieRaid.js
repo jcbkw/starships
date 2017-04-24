@@ -22,34 +22,7 @@
      */
     api.start = function () {
         
-        var intruder, 
-            height = 16,
-            space = 10,
-            width = 16,
-            rows = 3,
-            cols = 8,
-            i,
-            j;
-    
-        for (j = 0; j < rows; j +=1 ) {
-           
-            
-            for (i = 0; i < cols; i += 1) {
-
-                intruder = new app.classes.game.entities.characters.Enemy(
-                    (width  * i) + (space * i),
-                    (height * j) + (space * j),
-                     width,
-                     height
-                );
-
-                intruder.group.add('darkforce', 'type-1');
-
-                this.stage.addChild(intruder);
-
-            };    
-            
-        }     
+             
         
     };
     

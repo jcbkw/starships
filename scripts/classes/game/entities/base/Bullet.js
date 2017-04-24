@@ -60,7 +60,7 @@
      * @static
      * @type Boolean
      */
-    Bullet.CAN_HIT_BULLET = false;
+    Bullet.CAN_HIT_BULLET = true;
     
     /**
      * @namespace The different bullet flight plans.
@@ -186,11 +186,11 @@
             
             this.speed  = this.speed + attacker.stepSize;
 
-            this.setBounds(this.getContainer().toBounds());
+            this.setBounds(app.stage.toBounds());
             
             position(this, attacker, direction.up, direction.down, direction.left, direction.right);
             
-            this.getContainer().addChild(this);
+            app.stage.addChild(this);
             
             shoot(this, direction.up, direction.down, direction.left, direction.right);
             

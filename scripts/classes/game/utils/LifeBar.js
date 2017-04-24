@@ -23,7 +23,7 @@
             
         Super.call(this);
         this.group.add(LifeBar.GROUP);
-        this.on.added = onAdded;
+        this.addListenerOnce(this.events.ADDED, onAdded);
         
     }
     

@@ -5,7 +5,7 @@
     var Super = app.classes.display.DisplayableContainer,
         
         /**
-         * @lends app.classes.display.DisplayClip.prototype
+         * @lends app.classes.display.DisplayableClip.prototype
          */
         api = new Super;
         
@@ -14,7 +14,7 @@
      * whithin its container.
      * 
      * @class
-     * @name DisplayClip
+     * @name DisplayableClip
      * @memberOf app.classes.display
      * 
      * @param {Number} [x=0]
@@ -22,12 +22,12 @@
      * @param {Number} [width=0]
      * @param {Number} [height=0]
      */
-    function DisplayClip (x, y, width, height) {
+    function DisplayableClip (x, y, width, height) {
         
         // call to super
         Super.call(this, x, y, width, height);
         
-        this._uncross = null;
+        this._uncross = [];
         
     }
     
@@ -37,14 +37,14 @@
      * @static
      * @name GROUP
      * @type String
-     * @memberOf app.classes.display.DisplayClip
+     * @memberOf app.classes.display.DisplayableClip
      */
-    DisplayClip.GROUP = 'displayclip';
+    DisplayableClip.GROUP = 'displayclip';
     
     /**
      * @type {Function} constructor Constructor
      */
-    api.constructor = DisplayClip;
+    api.constructor = DisplayableClip;
 
     /**
      * @property {Number} stepSize The clips's displacement size
@@ -53,7 +53,7 @@
     
     /**
      * @private
-     * @type {?Function} _uncross    This function is temporarily
+     * @type {Function[]} _uncross          These function are temporarily
      *                                      populated after a call to
      *                                      walk, walkTo, and can be
      *                                      used stop the clip from
@@ -65,7 +65,7 @@
      * A function to call when the cross has been completed
      * 
      * @callback crossOnCompleteCallback
-     * @param {app.classes.display.DisplayClip} instance The instance which was crossing
+     * @param {app.classes.display.DisplayableClip} instance The instance which was crossing
      * @param {Boolean} wasForce Whether the completion was forcefully triggered 
      *                          (e.g. called before the cross has actually completed)
      */
@@ -80,7 +80,7 @@
      * @param {Number} [y=0]                The desired final Y position.
      *                                      Can be a negative integer.
      * 
-     * @param {app.classes.display.DisplayClip~crossOnCompleteCallback} [onComplete]
+     * @param {app.classes.display.DisplayableClip~crossOnCompleteCallback} [onComplete]
      *                                      
      * @param {Function} [onDirection]      A function to call each time
      *                                      this function has new insights
@@ -90,15 +90,23 @@
      * @param {Function} [onStep]           A function to call after each
      *                                      step of the cross.
      *                                      
-     * @param {Number} [v=this.stepSize]    The stepSize to use.
+     * @param {Number|Object} [v=this]      The stepSize to use. If you pass
+     *                                      a number, that number will be used
+     *                                      as stepSize, if you pass an object,
+     *                                      that object's stepSize will be read
+     *                                      on each tick. If you ommit this
+     *                                      argument, the current instance's
+     *                                      stepSize will be used. Step sizes
+     *                                      must be positive numbers.
      */
     api.cross = function (x, y, onComplete, onDirection, onStep, v) {
         
         x = x || 0;
         y = y || 0;
-        v = v || this.stepSize;
-
-        var that            = this,
+                
+        var crossId         = -1,
+            that            = this,
+            live            = !v || typeof v === 'object',
             
             xDir            = x > 0 ? app.classes.geom.Direction.RIGHT 
                                     : app.classes.geom.Direction.LEFT,
@@ -117,10 +125,25 @@
             xDone           = !x,
             yDone           = !y,
             
-            xV              = xNeg ? -v : v,
-            yV              = yNeg ? -v : v,
+            xV,
+            yV,
+            m,
             
+            mSource,
             setDirection;
+            
+        if (live) {
+            
+            mSource         = !v ? that : v;
+                        
+        }
+        else {
+            
+            m               = v;
+            xV              = xNeg ? -m : m;
+            yV              = yNeg ? -m : m;
+                        
+        }
             
         if (onDirection) {
             
@@ -147,13 +170,28 @@
         }
         
         function stepper () {
-
+            
+            if (live) {
+            
+                m               = mSource.stepSize;
+                xV              = xNeg ? -m : m;
+                yV              = yNeg ? -m : m;
+                
+            }
+            
             if (x && !xDone) {
                 
                 nowX += xV;
                 xDone = xNeg ? nowX <= endX : nowX >= endX;
                 
                 if (xDone) {
+                    
+                    if (endY !== nowY) {
+                        
+                        // adjust delta to end excalty at endX
+                        xV = nowX - endX;
+                        
+                    }
                     
                     that.move(xV, 0);
                     setDirection && setDirection();
@@ -175,6 +213,13 @@
                 
                 if (yDone) {
                     
+                    if (endY !== nowY) {
+                        
+                        // adjust delta to end excalty at endY
+                        yV = nowY - endY;
+                        
+                    }
+                    
                     that.move(0, yV);
                     setDirection && setDirection();
                     stop();
@@ -193,7 +238,7 @@
         }
 
         function stop (force) {
-
+            
             if (stepper && (force || (xDone && yDone))) {
 
                 xDone = yDone = true;
@@ -201,7 +246,14 @@
                 app.unTick(stepper);               
                 setDirection && setDirection();
                 
-                that._uncross = stepper = stop = null;
+                stepper = stop = null;
+                
+                if (crossId !== -1 && that._uncross[crossId]) {
+                    
+                    that._uncross[crossId] = null;
+                    crossId = -1;
+                    
+                }
                 
                 app.nextTick(function () {
                     
@@ -215,10 +267,9 @@
 
         }
         
-        // cancel previous
-        this.uncross();
-
-        this._uncross = function () {
+        crossId = this._uncross.length;
+        
+        this._uncross[crossId] = function () {
 
             stop && stop(true /*forced*/);
 
@@ -226,6 +277,8 @@
 
         setDirection && setDirection();            
         app.onTick(stepper);
+        
+        return crossId;
         
     };
     
@@ -249,7 +302,14 @@
      * @param {Function} [onStep]           A function to call after each
      *                                      step of the cross.
      *                                      
-     * @param {Number} [v=this.stepSize]    The stepSize to use.
+     * @param {Number|Object} [v=this]      The stepSize to use. If you pass
+     *                                      a number, that number will be used
+     *                                      as stepSize, if you pass an object,
+     *                                      that object's stepSize will be read
+     *                                      on each tick. If you ommit this
+     *                                      argument, the current instance's
+     *                                      stepSize will be used. Step sizes
+     *                                      must be positive numbers.
      */        
     api.crossTo = function (x, y, onComplete, onDirection, onStep, v) {
 
@@ -264,12 +324,23 @@
     /**
      * Cancels any motion started by 
      * cross or crossTo (if any) at any time.
+     * 
+     * @param {int} id The ID of the cross to uncross.
+     *                 If ommitted, all the crosses get
+     *                 stopped.
      */
-    api.uncross = function () {
-        
-        this._uncross && this._uncross();
-        
-        this._uncross = null;
+    api.uncross = function (id) {
+                
+        if (arguments.length === 0) {
+            
+            this._uncross.forEach(uncross, this);
+            
+        }
+        else {
+            
+            uncross.call(this, this._uncross[id], id);
+            
+        }
         
     };
     
@@ -328,8 +399,26 @@
 
     };
     
-    DisplayClip.prototype = api;
+    /**
+     * Invokes the given uncrossFn,
+     * and removes it from the _uncross
+     * functions array.
+     * 
+     * @private
+     * 
+     * @param {Function} uncrossFn
+     * @param {int} index
+     */
+    function uncross (uncrossFn, index) {
+        
+        uncrossFn && uncrossFn();
+        
+        this[index] = null;
+                
+    }
     
-    ns.set('app.classes.display.DisplayClip', DisplayClip);
+    DisplayableClip.prototype = api;
+    
+    ns.set('app.classes.display.DisplayableClip', DisplayableClip);
     
  })();

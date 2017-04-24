@@ -17,10 +17,27 @@
         SuperB = app.core.Finalizable,
         
         /**
+         * Super
+         * @private
+         * @type Function
+         */
+        SuperC = app.core.EventTarget,
+        
+        /**
+         * Super
+         * @private
+         * @type Function
+         */
+        SuperD = app.core.MetadataBag,
+        
+        /**
          * @private
          * @lends {app.classes.display.Displayable.prototype}
          */
-        api = ns.merge(new SuperA, SuperB.prototype);
+        api = ns.merge(new SuperA, 
+                       SuperB.prototype, 
+                       SuperC.prototype,
+                       SuperD.prototype);
     
     /**
      * An Object that can be rendered on the screen.
@@ -40,15 +57,15 @@
         // call to super
         SuperA.call(this, x, y, width, height);
         SuperB.call(this);
+        SuperC.call(this);
+        SuperD.call(this);
         
         this.element = document.createElement('div');
         this.group = this.element.classList;
         this.transform = new app.classes.display.displayable.Transformer(this);
-        this.on = new app.classes.display.displayable.Informer();
         this.visible = true;
         this.locked = false;
         this.alpha = 1;
-        this.meta = null;
         this.name = null;
         this.bounds = null;
         this.processor = null;
@@ -67,9 +84,35 @@
      * @static
      * @name GROUP
      * @type String
-     * @memberOf app.classes.display.DisplayableContainer
+     * @memberOf app.classes.display.Displayable
      */
     Displayable.GROUP = 'displayable';
+    
+    /**
+     * The events dispatched by this type.
+     * 
+     * @static
+     * @name Events
+     * @type namespace
+     * @memberOf app.classes.display.Displayable
+     */
+    Displayable.Events = {
+        
+        /**
+         * @memberOf app.classes.display.Displayable.Events
+         * @property {String} ADDED Dispatched when this instance has been
+         *                          added to a container.
+         */
+        ADDED: 'added',
+        
+        /**
+         * @memberOf app.classes.display.Displayable.Events
+         * @property {String} REMOVED Dispatched when this instance has been
+         *                            removed from a container.
+         */
+        REMOVED: 'removed'
+        
+    };
     
     /**
      * @property {Function} constructor Constructor
@@ -113,19 +156,17 @@
     api.processor = null;
     
     /**
-     * @type app.classes.display.displayable.Informer
+     * The events dispatched by this instance.
+     * Shorthand to app.classes.display.Displayable.Events
+     * @borrows app.classes.display.Displayable.Events as events
+     * @type Object
      */
-    api.on = null;
+    api.events = Displayable.Events;
     
     /**
      * @type Number
      */
     api.alpha = 1;
-    
-    /**
-     * @type Object
-     */
-    api.meta = null;
     
     /**
      * @type Boolean
@@ -172,7 +213,6 @@
             this.element        = 
             this.bounds         = 
             this.group          = 
-            this.meta           = 
             this.name           = 
             this.on             = null;
             
@@ -203,29 +243,7 @@
         this.name = value;
         
     };
-    
-    /**
-     * Attach meta data to this instance.
-     * 
-     * @param {(Object|null)} value
-     */
-    api.setMetaData = function (value) {
         
-        this.meta = value;
-        
-    };
-    
-    /**
-     * Get meta data attached to this instance.
-     * 
-     * @returns {(Object|null)}
-     */
-    api.getMetaData = function () {
-        
-        return this.meta;
-        
-    };
-    
     /**
      * Set this instance's opacity.
      * 
@@ -565,8 +583,8 @@
         
         return     this.y < bounds.top
                 || this.x < bounds.left
-                || this.y > bounds.right
-                || this.x > bounds.bottom;
+                || this.y > bounds.bottom
+                || this.x > bounds.right;
         
     };
     

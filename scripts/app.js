@@ -2,8 +2,9 @@
 
 (function () {
            
-    var queuedForTick = [],
-        queuedForTickMaxLength = 32000,
+    var queuedForTickMaxLength = 1024,
+        queuedForTickCursor = -1,
+        queuedForTick = new Array(queuedForTickMaxLength),
         api = {};
     
     /**
@@ -28,7 +29,7 @@
     api.onTick = function (callback) {
         
         cleanseQueue();
-        queuedForTick.push(callback);
+        queuedForTick[++queuedForTickCursor] = callback;
         
     };
     
@@ -103,7 +104,7 @@
         var galaxy = new app.classes.game.graphics.Galaxy(0, 0, app.viewport.width, app.viewport.height);
             
         app.stage.addChild(galaxy);
-        galaxy.render(50);
+        galaxy.render(30);
         
        
         app.player = new app.classes.game.entities.characters.Player(0, 0, 16, 16);
@@ -125,8 +126,19 @@
         
         ns.set('app.game.engine', new app.classes.game.Engine);
         
-        app.ai = new app.classes.game.ai.ZombieRaid(app.stage);
-        app.ai.start();
+        
+        new app.classes.game.entities.volumes.Barricade (50, 200, 32, 8);
+        new app.classes.game.entities.volumes.Barricade (150, 200, 32, 8);
+        new app.classes.game.entities.volumes.Barricade (250, 200, 32, 8);
+        new app.classes.game.entities.volumes.Barricade (350, 200, 32, 8);
+        
+        var e = new app.classes.game.entities.characters.EnemyFleet(0,0,.2);
+
+        e.setFormation();
+        app.stage.addChild(e);
+        
+        
+        
         
             
         // start ticking
@@ -173,7 +185,9 @@
 
         if (!app.paused) {
 
-            for (var i = 0, count = queuedForTick.length, fn; i < count; i += 1) {
+            requestAnimationFrame(tick);
+            
+            for (var i = 0, count = (queuedForTickCursor + 1) >>> 0, fn; i < count; ++i) {
 
                 fn = queuedForTick[i];
 
@@ -183,34 +197,37 @@
 
         }
         
-        requestAnimationFrame(tick);
-
     }
     
     function cleanseQueue () {
         
-        var newQueue,
-            callback,
-            count = queuedForTick.length >>> 0,
-            i;
+        var count = (queuedForTickCursor + 1) >>> 0;
         
-        if (count > queuedForTickMaxLength) {
+        if (count === queuedForTickMaxLength) {
             
-            newQueue = [];
+            var newQueue = new Array(queuedForTickMaxLength),
+                newCursor = -1;
             
-            for (i = 0; i < count; i += 1) {
+            for (var i = 0; i < count; ++i) {
                 
-                callback = queuedForTick[i];
+                var callback = queuedForTick[i];
                 
                 if (callback) {
                     
-                    newQueue.push(callback);
+                    newQueue[++newCursor] = callback;
                     
                 }
                 
             }
             
+            if (newCursor === queuedForTickCursor) {
+                
+                throw new Error('Maximum tick callbacks reached: ' + queuedForTickMaxLength + '!');
+                
+            }
+            
             queuedForTick = newQueue;
+            queuedForTickCursor = newCursor;
             
         }
         

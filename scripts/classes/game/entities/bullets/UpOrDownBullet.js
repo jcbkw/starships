@@ -21,24 +21,32 @@
      */
     function UpOrDownBullet (weapon) {
         
+        
         // call to super
         Super.call(   
             this,
             weapon,
-            /*speed*/  5
+            /*angle*/ 0,
+            /*speed*/ 1,
             /*lifeImpact*/  -5
         );
+
+        var isOnPlayerSide = this.isOnPlayerSide();
         
         this.setStrategy(app.classes.game.entities.base.Bullet.Strategy.STATIC_DIRECTION);
         
-        if (this.isOnPlayerSide()) {
+        if (isOnPlayerSide) {
             
             this.setDirection(app.classes.geom.Direction.UP);
+            // todo nooooo
+            this.element.style.backgroundColor = 'rgb(85, 85, 255)';
             
         }
         else {
             
             this.setDirection(app.classes.geom.Direction.DOWN);
+            // todo nooooo
+            this.element.style.backgroundColor = 'orangered';
             
         }
         

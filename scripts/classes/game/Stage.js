@@ -3,17 +3,22 @@
 (function () {
     
     /**
-     * @type app.classes.display.DisplayClip
+     * @type app.classes.display.DisplayableClip
      */
-    var Super = app.classes.display.DisplayClip,
+    var Super = app.classes.display.DisplayableClip,
     
         /**
          * @lends app.classes.display.Stage.prototype
          */
-        api = new Super;
+        api = new Super,
+        
+        /**
+         * @type String
+         */
+        metaStageIndex = 'stageIndex';
     
     /**
-     * @class Stage The main DisplayClip of the application
+     * @class Stage The main DisplayableClip of the application
      * 
      * @param {Number} [x=0]
      * @param {Number} [y=0]
@@ -164,7 +169,7 @@
             
             if (app.tk.arrays.put(stage.entities, displayable)) {
                 
-                displayable.setMetaData(new IndexStore(stage.entities.length - 1));
+                displayable.setMetadata(metaStageIndex, stage.entities.length - 1);
                 
             }
             
@@ -180,25 +185,14 @@
      */
     function onRemove (stage, displayable) {
         
-        var indexStore = displayable && displayable.getMetaData();
+        var stageIndex = displayable && displayable.getMetadata(metaStageIndex);
         
-        if (indexStore && indexStore instanceof IndexStore) {
+        if (stageIndex) {
             
-            stage.entities[indexStore.index] = null;
-            displayable.setMetaData(null);
+            stage.entities[stageIndex] = null;
+            displayable.removeMetadata(metaStageIndex);
             
         }
-        
-    }
-    
-    /**
-     * Creates a fast object with an index property
-     * @private
-     * @param {Number} index
-     */
-    function IndexStore (index) {
-        
-        this.index = index;
         
     }
     

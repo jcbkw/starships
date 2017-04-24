@@ -18,21 +18,22 @@
      * @class
      * 
      * @param {Weapon} weapon
+     * @param {Number} [angle=5]
      * @param {Number} [speed=5]
      * @param {Number} [lifeImpact=-5]
      */
-    function TinyBullet (weapon, speed, lifeImpact) {
+    function TinyBullet (weapon, angle, speed, lifeImpact) {
         
         // call to super
         Super.call(   
             this,
             weapon,
-            /*angle*/  0,
-            /*speed*/  speed || 5, 
+            /*angle*/  angle || 0,
+            /*speed*/  speed || 1, 
             /*x*/      0, 
             /*y*/      0, 
-            /*width*/  5, 
-            /*height*/ 5
+            /*width*/  2, 
+            /*height*/ 6  
         );
         
         this.initialPad = 0;
